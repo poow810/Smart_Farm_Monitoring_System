@@ -36,7 +36,7 @@ let receivedData = data.json();
 #### 1.3.1 use PascalCase
 ```js
 class MyClass { 
-    // Class statements and logic
+    // ...
 }
 ```
 #### 1.3.2 should not start with verb
