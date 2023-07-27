@@ -15,8 +15,10 @@ public class TokenService {
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
 
+
+
     public String createNewAccessToken(String refreshToken) {
-        if(!tokenProvider.validToken(refreshToken)) {
+        if(!tokenProvider.validToken(refreshToken)) { // 토큰 유효성 검사 실패 시 예외 발생
             throw new IllegalArgumentException("Unexpected token");
         }
         Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();

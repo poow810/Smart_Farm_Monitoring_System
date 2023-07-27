@@ -24,4 +24,12 @@ public class Article {
         this.title = title;
         this.content = content;
     }
+
+    // 엔티티에 요청 받은 내용으로 값을 수정
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+
 }
