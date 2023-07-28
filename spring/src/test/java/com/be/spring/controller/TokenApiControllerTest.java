@@ -23,11 +23,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -58,7 +56,7 @@ class TokenApiControllerTest {
         userRepository.deleteAll();
     }
 
-    @DisplayName("createNewAccessToken: 새로운 액세스 토큰을 발급한다.")
+    @DisplayName("createNewAccessToken : 새로운 액세스 토큰을 발급한다.")
     @Test
     public void createNewAccessToken() throws Exception {
         // given
@@ -69,15 +67,16 @@ class TokenApiControllerTest {
                 .password("test")
                 .build());
 
-        String refreshToekn = JwtFactory.builder()
+        String refreshToken = JwtFactory.builder()
                 .claims(Map.of("id", testUser.getId()))
                 .build()
                 .createToken(jwtProperties);
 
-        refreshTokenRepository.save(new RefreshToken(testUser.getId(), refreshToekn));
+        refreshTokenRepository.save(new RefreshToken(testUser.getId(), refreshToken));
 
         CreateAccessTokenRequest request = new CreateAccessTokenRequest();
-        request.setRefreshToken(refreshToekn);
+        request.setRefreshToken(refreshToken);
+
         final String requestBody = objectMapper.writeValueAsString(request);
 
         // when
@@ -90,5 +89,4 @@ class TokenApiControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accessToken").isNotEmpty());
     }
-
 }

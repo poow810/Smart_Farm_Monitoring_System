@@ -17,13 +17,12 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class TokenProviderTest {
+public class TokenProviderTest {
+
     @Autowired
     private TokenProvider tokenProvider;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private JwtProperties jwtProperties;
 
@@ -50,7 +49,8 @@ class TokenProviderTest {
         assertThat(userId).isEqualTo(testUser.getId());
     }
 
-    @DisplayName("validToken(): 만료된 토큰인 경우에 유효성 검증에 실패한다.")
+    // validToken() 검증 테스트
+    @DisplayName("validToken(): 만료된 토큰인 때에 유효성 검증에 실패한다.")
     @Test
     void validToken_invalidToken() {
         // given
@@ -66,13 +66,11 @@ class TokenProviderTest {
         assertThat(result).isFalse();
     }
 
-
-    @DisplayName("validToken(): 유효한 토큰인 경우에 유효성 검증에 성공한다.")
+    @DisplayName("validToken(): 유효한 토큰인 때에 유효성 검증에 성공한다.")
     @Test
     void validToken_validToken() {
         // given
-        String token = JwtFactory.withDefaultValues()
-                .createToken(jwtProperties);
+        String token = JwtFactory.withDefaultValues().createToken(jwtProperties);
 
         // when
         boolean result = tokenProvider.validToken(token);
@@ -81,16 +79,15 @@ class TokenProviderTest {
         assertThat(result).isTrue();
     }
 
-
-    @DisplayName("getAuthentication(): 토큰 기반으로 인증정보를 가져올 수 있다.")
+    // getAuthentication() 검증 테스트
+    @DisplayName("getAuthentication() : 토큰 기반으로 인증 정보를 가져올 수 있다.")
     @Test
     void getAuthentication() {
         // given
-        String userEmail = "user@email.com";
+        String userEmail = "user@gmail.com";
         String token = JwtFactory.builder()
                 .subject(userEmail)
-                .build()
-                .createToken(jwtProperties);
+                .build().createToken(jwtProperties);
 
         // when
         Authentication authentication = tokenProvider.getAuthentication(token);
@@ -99,6 +96,7 @@ class TokenProviderTest {
         assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo(userEmail);
     }
 
+    // getUserId() 검증 테스트
     @DisplayName("getUserId(): 토큰으로 유저 ID를 가져올 수 있다.")
     @Test
     void getUserId() {
@@ -115,5 +113,4 @@ class TokenProviderTest {
         // then
         assertThat(userIdByToken).isEqualTo(userId);
     }
-
 }

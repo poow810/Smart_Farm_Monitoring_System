@@ -5,7 +5,6 @@ import com.be.spring.dto.AddUserRequest;
 import com.be.spring.entity.User;
 import com.be.spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,4 +26,9 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
     }
+
+//    public User findByEmail(String email) {
+//        return userRepository.findByEmail(email)
+//                .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
+//    }
 }

@@ -20,7 +20,7 @@ public class UserViewController {
 
     @GetMapping("/articles")
     public String getArticle() {
-        return "logout.html";
+        return "logout";
     }
 }
 

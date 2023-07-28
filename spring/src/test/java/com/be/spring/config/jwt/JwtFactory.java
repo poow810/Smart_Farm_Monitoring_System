@@ -14,14 +14,18 @@ import static java.util.Collections.emptyMap;
 
 @Getter
 public class JwtFactory {
-    private String subject = "user@gmail.com";
+
+    private String subject = "test@email.com";
+
     private Date issuedAt = new Date();
+
     private Date expiration = new Date(new Date().getTime() + Duration.ofDays(14).toMillis());
+
     private Map<String, Object> claims = emptyMap();
 
-
     @Builder
-    public JwtFactory(String subject, Date issuedAt, Date expiration, Map<String, Object> claims) {
+    public JwtFactory(String subject, Date issuedAt, Date expiration,
+                      Map<String, Object> claims) {
         this.subject = subject != null ? subject : this.subject;
         this.issuedAt = issuedAt != null ? issuedAt : this.issuedAt;
         this.expiration = expiration != null ? expiration : this.expiration;
@@ -32,7 +36,6 @@ public class JwtFactory {
         return JwtFactory.builder().build();
     }
 
-    // jwt 라이브러리를 이용하여 JWT 토큰 생성
     public String createToken(JwtProperties jwtProperties) {
         return Jwts.builder()
                 .setSubject(subject)
