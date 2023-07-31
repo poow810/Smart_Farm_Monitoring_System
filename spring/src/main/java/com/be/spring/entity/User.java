@@ -28,22 +28,22 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-//    // OAuth 서비스
-//    // 사용자 이름
-//    @Column(name = "nickname", unique = true)
-//    private String nickname;
+    // OAuth 서비스
+    // 사용자 이름
+    @Column(name = "nickname", unique = true)
+    private String nickname;
 
     @Builder
-    public User(String email, String password) {
+    public User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
-//        this.nickname = nickname;
+        this.nickname = nickname;
     }
 
-//    public User update(String nickname) {
-//        this.nickname = nickname;
-//        return this;
-//    }
+    public User update(String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
 
     @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
