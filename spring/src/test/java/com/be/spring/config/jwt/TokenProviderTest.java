@@ -1,7 +1,9 @@
 package com.be.spring.config.jwt;
 
-import com.be.spring.entity.User;
-import com.be.spring.repository.UserRepository;
+import com.be.spring.management.config.jwt.JwtProperties;
+import com.be.spring.management.config.jwt.TokenProvider;
+import com.be.spring.management.entity.User;
+import com.be.spring.management.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -2,12 +2,12 @@ package com.be.spring.controller;
 
 
 import com.be.spring.config.jwt.JwtFactory;
-import com.be.spring.config.jwt.JwtProperties;
-import com.be.spring.dto.CreateAccessTokenRequest;
-import com.be.spring.entity.RefreshToken;
-import com.be.spring.entity.User;
-import com.be.spring.repository.RefreshTokenRepository;
-import com.be.spring.repository.UserRepository;
+import com.be.spring.management.config.jwt.JwtProperties;
+import com.be.spring.management.dto.CreateAccessTokenRequest;
+import com.be.spring.management.entity.RefreshToken;
+import com.be.spring.management.entity.User;
+import com.be.spring.management.repository.RefreshTokenRepository;
+import com.be.spring.management.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
