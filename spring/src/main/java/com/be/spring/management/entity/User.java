@@ -1,21 +1,24 @@
 package com.be.spring.management.entity;
 
 
-import com.be.spring.device.entity.Device;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
+@Builder
 public class User implements UserDetails {
 
     @Id
@@ -29,36 +32,40 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    // OAuth 서비스
-    // 사용자 이름
-    @Column(name = "nickname", unique = true)
-    private String nickname;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Device> devices;
 
-    @Builder
-    public User(String email, String password, String nickname, List<Device> devices) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.devices = devices;
-    }
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
-    public void addDevice(Device device) {
-        devices.add(device);
-        device.setUser(this);
-    }
-
-    public User update(String nickname) {
-        this.nickname = nickname;
-        return this;
-    }
-
-    @Override // 권한 반환
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("user"));
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
+
+//    // OAuth 서비스
+//    // 사용자 이름
+//    @Column(name = "nickname", unique = true)
+//    private String nickname;
+
+//    @Builder
+//    public User(String email, String password,  role) {
+//        this.email = email;
+//        this.password = password;
+//        this.roles = roles;
+//    }
+//
+//    public void addDevice(Device device) {
+//        devices.add(device);
+//        device.setUser(this);
+//    }
+//
+//    public User update(String nickname) {
+//        this.nickname = nickname;
+//        return this;
+//    }
 
     @Override // 사용자의 id를 반환(고유 값)
     public String getUsername() {
