@@ -3,6 +3,7 @@ package com.be.spring.management.controller;
 
 import com.be.spring.management.dto.AddUserRequest;
 import com.be.spring.management.dto.JwtToken;
+import com.be.spring.management.service.RefreshTokenService;
 import com.be.spring.management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,12 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
+
 
     @PostMapping("/login")
     public JwtToken login(@RequestBody AddUserRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
-        JwtToken token = userService.login(email, password);
-        return token;
+        return userService.login(email, password);
     }
 }

@@ -16,6 +16,7 @@ public class RefreshToken {
     @Column(name = "id", updatable = false)
     private Long id;
 
+
     @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 

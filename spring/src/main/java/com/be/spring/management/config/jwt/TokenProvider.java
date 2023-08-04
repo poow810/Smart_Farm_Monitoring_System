@@ -35,12 +35,6 @@ public class TokenProvider {
             throw new RuntimeException("Error initializing key from secret", e);
         }
     }
-//    @Autowired
-//    public TokenProvider(JwtProperties jwtProperties) {
-//        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
-//        this.key = Keys.hmacShaKeyFor(keyBytes);
-//
-//    }
 
     public JwtToken generateToken(Authentication authentication) {
         // 권한 가져오기
@@ -58,6 +52,7 @@ public class TokenProvider {
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
         // 리프레시 토큰 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + 86400000))
