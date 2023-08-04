@@ -65,6 +65,4 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(email);
         return user.map(User::getId).orElse(null);
     }
-
-
 }

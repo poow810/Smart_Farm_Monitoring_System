@@ -19,7 +19,11 @@ public class UserController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
+//    @PostMapping("/signup")
+//    public
 
+
+    // 로그인 기능
     @PostMapping("/login")
     public JwtToken login(@RequestBody AddUserRequest request) {
         String email = request.getEmail();

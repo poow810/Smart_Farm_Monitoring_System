@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
-    //
-
     // 리프레시 토큰 생성 시 데이터 베이스에 저장
     public void saveRefreshToken(Long userId, String newRefreshToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
