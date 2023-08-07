@@ -32,9 +32,15 @@ public class UserService {
     // 회원가입 서비스
     public Long save(AddUserRequest dto) {
         return userRepository.save(User.builder()
+                .userId(dto.getUserId())
                 .email(dto.getEmail())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
                 .build()).getId();
+    }
+
+    // 아이디 중복 검사
+    public boolean checkIdDuplicate(String user_id) {
+        return userRepository.existsByUserId(user_id);
     }
 
 

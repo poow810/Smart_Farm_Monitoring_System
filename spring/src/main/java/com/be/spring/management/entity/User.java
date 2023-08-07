@@ -2,6 +2,9 @@ package com.be.spring.management.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,16 +29,20 @@ public class User implements UserDetails {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @NotBlank
+    @Size(min=2, max = 15, message = "아이디는 2자 이상 15자 이하로 입력해주세요.")
     @Column(name = "userId", nullable = false, unique = true)
     private String userId;
 
+    @NotBlank(message = "이메일 주소를 입력해주세요.")
+    @Email(message = "이메일 형식으로 입력해주세요.")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "비밀번호를 입력해주세요.")
+    @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하로 입력해주세요.")
     @Column(name = "password")
     private String password;
-
-
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

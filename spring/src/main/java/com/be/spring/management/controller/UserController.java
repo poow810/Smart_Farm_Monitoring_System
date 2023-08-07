@@ -6,10 +6,8 @@ import com.be.spring.management.dto.JwtToken;
 import com.be.spring.management.service.RefreshTokenService;
 import com.be.spring.management.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,9 +17,18 @@ public class UserController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
-//    @PostMapping("/signup")
-//    public
+    // 회원 가입 기능
+    @PostMapping("/signup")
+    public String signup(@RequestBody AddUserRequest request) {
+        userService.save(request);
+        return "redirect:/login";
+    }
 
+    // 회원 가입 시 중복 검사
+    @GetMapping("/signup/{userId}/exists")
+    public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userId) {
+        return ResponseEntity.ok(userService.checkIdDuplicate(userId));
+    }
 
     // 로그인 기능
     @PostMapping("/login")
