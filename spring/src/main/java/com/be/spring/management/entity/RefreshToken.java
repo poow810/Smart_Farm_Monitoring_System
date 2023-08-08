@@ -17,10 +17,10 @@ public class RefreshToken {
     private Long id;
 
 
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "userId", nullable = false, unique = true)
     private Long userId;
 
-    @Column(name = "refresh_token", nullable = false)
+    @Column(name = "refreshToken", nullable = false)
     private String refreshToken;
 
     public RefreshToken(Long userId, String refreshToken) {

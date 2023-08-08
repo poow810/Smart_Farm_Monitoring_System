@@ -28,7 +28,7 @@ public class UserDetailService implements UserDetailsService {
     private UserDetails createUserDetails(com.be.spring.management.entity.User user) {
         return User.builder()
                 .username(user.getUsername())
-                .password(bCryptPasswordEncoder.encode(user.getPassword()))
+                .password(user.getPassword())
                 .roles(user.getRoles().toArray(new String[0]))
                 .build();
     }

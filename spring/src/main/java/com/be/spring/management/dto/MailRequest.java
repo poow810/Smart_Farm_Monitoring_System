@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MailRequest {
-    private String mail;
+    private String email;
 }
