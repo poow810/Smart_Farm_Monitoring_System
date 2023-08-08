@@ -38,9 +38,9 @@ public class UserController {
     // 로그인 기능
     @PostMapping("/login")
     public JwtToken login(@RequestBody AddUserRequest request) {
-        String email = request.getEmail();
+        String userId = request.getUserId();
         String password = request.getPassword();
-        return userService.login(email, password);
+        return userService.login(userId, password);
     }
 
     // 아이디 찾기 기능

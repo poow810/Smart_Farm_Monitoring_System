@@ -40,25 +40,25 @@ public class UserService {
     }
 
     // 아이디 중복 검사
-    public boolean checkIdDuplicate(String user_id) {
-        return userRepository.existsByUserId(user_id);
+    public boolean checkIdDuplicate(String userId) {
+        return userRepository.existsByUserId(userId);
     }
 
 
     // 로그인 서비스
-    public JwtToken login(String email, String password) {
+    public JwtToken login(String userId, String password) {
         // Authentication 객체 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 검증된 인증 정보로 JWT 토큰 생성
         JwtToken token = tokenProvider.generateToken(authentication);
 
-        // 이메일 기반 사용자 ID 검색
-        Long userId = getIdByEmail(email);
+        // 아이디 기반 사용자 ID 검색
+        Long userIdInDB = getIdByUserId(userId);
 
         // RefreshToken 객체 생성
-        RefreshToken refreshToken = new RefreshToken(userId, token.getRefreshToken());
+        RefreshToken refreshToken = new RefreshToken(userIdInDB, token.getRefreshToken());
 
         // 데이터 베이스에 refreshToken 저장
         refreshTokenRepository.save(refreshToken);
@@ -87,9 +87,9 @@ public class UserService {
 
 
 
-    // 유저의 이메일을 통해 사용자의 id 추적
-    public Long getIdByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
+    // 유저의 아이디를 통해 사용자의 id(primary key)추적
+    public Long getIdByUserId(String userId) {
+        Optional<User> user = userRepository.findByUserId(userId);
         return user.map(User::getId).orElse(null);
     }
 }
