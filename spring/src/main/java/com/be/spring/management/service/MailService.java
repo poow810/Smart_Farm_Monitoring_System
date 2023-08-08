@@ -1,10 +1,14 @@
 package com.be.spring.management.service;
 
 
+import com.be.spring.management.entity.User;
+import com.be.spring.management.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +18,8 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private static final String senderEmail = "poow810@gmail.com";
     private static int number;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public static void createNumber() {
         number = (int)(Math.random() * (90000)) + 100000;
@@ -38,7 +44,7 @@ public class MailService {
         return message;
     }
 
-    // 이메일 입력 시 메일로 해당 유저의 아이디 발송
+    // 아이디를 찾기 위한 메일 발송
     public void sendUserIdToEmail(String email, String userId) {
         MimeMessage message = javaMailSender.createMimeMessage();
 
@@ -62,5 +68,36 @@ public class MailService {
         javaMailSender.send(message);
 
         return number;
+    }
+
+    // 비밀번호 재설정을 위한 메일 발송
+    public String sendPasswordToEmail(String email) {
+        String tempPassword = generateTempPassword();
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        try {
+            message.setFrom(senderEmail);
+            message.setRecipients(MimeMessage.RecipientType.TO, email);
+            message.setSubject("비밀번호 재설정");
+            String body ="";
+            body += "<h3>" + "회원님의 임시 비밀번호입니다." + "</h3>";
+            body += "<h1>" + tempPassword + "</h1>";
+            body += "<h3>" + "로그인 후 반드시 비밀번호를 변경해주세요." + "</h3>";
+            message.setText(body, "UTF-8", "html");
+        }catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        javaMailSender.send(message);
+        return tempPassword;
+    }
+
+    // 임시 비밀번호 생성
+    public String generateTempPassword() {
+        StringBuilder sb = new StringBuilder();
+        for (int i =0; i < 8; i++) {
+            int index = (int) (Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length());
+            sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(index));
+        }
+        return sb.toString();
     }
 }

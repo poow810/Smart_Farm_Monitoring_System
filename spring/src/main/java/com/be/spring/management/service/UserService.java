@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final MailService mailService;
+    private final RefreshTokenService refreshTokenService;
 
 
     // 회원가입 서비스
@@ -57,20 +59,21 @@ public class UserService {
         // 아이디 기반 사용자 ID 검색
         Long userIdInDB = getIdByUserId(userId);
 
-        // RefreshToken 객체 생성
-        RefreshToken refreshToken = new RefreshToken(userIdInDB, token.getRefreshToken());
-
-        // 데이터 베이스에 refreshToken 저장
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenService.saveRefreshToken(userIdInDB, token.getRefreshToken());
 
         return token;
     }
 
     // 유저의 이메일을 통해 userId 추적
     public String getUserIdByEmail(String email) {
-        System.out.println("Email: " + email); // 이 부분 추가
         Optional<User> user = userRepository.findByEmail(email);
         return user.map(User::getUserId).orElse(null);
+    }
+
+    // 유저의 이메일과 해당 email로 가입된 userId가 있는지, 일치하는지 조회
+    public boolean userEmailCheck(String email, String userId) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.map(user -> user.getUserId().equals(userId)).orElse(false);
     }
 
     // 아이디 찾기
@@ -84,7 +87,27 @@ public class UserService {
         String content = "아이디는 : " + userId + "입니다.";
         mailService.sendMail(content);
     }
+    // 비밀번호 변경
+    public boolean changePassword(String userId, String oldPassword, String newPassword) {
+        User user = userRepository.findByUserId(userId).orElse(null);
 
+        if (user == null) {
+            return false;
+        }
+        if (bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
+            updatePassword(newPassword, userId);
+            return true;
+        }
+        return false;
+    }
+    // 비밀번호 업데이트
+    public void updatePassword(String newPassword, String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저의 아이디를 찾을 수 없습니다."));
+
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 
 
     // 유저의 아이디를 통해 사용자의 id(primary key)추적
