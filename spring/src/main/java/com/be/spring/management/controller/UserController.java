@@ -17,7 +17,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping("/changePw")
     public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequest request, Principal principal) {

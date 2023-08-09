@@ -41,6 +41,7 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 
     // Request header 에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {
+        System.out.println("Authorization Header: " + request.getHeader("Authorization"));
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")){
             return bearerToken.substring(7);

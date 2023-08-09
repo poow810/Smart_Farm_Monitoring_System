@@ -28,7 +28,7 @@ public class SecurityConfig {
                         sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/members/**", "/mail/**","/user/**").permitAll()
+                                .requestMatchers("/members/**", "/mail/**").permitAll()
                                 .requestMatchers("/members/test").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
