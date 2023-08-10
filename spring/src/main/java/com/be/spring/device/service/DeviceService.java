@@ -16,6 +16,8 @@ public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final UserRepository userRepository;
 
+
+    // 디바이스 추가
     public Device addDeviceToUser(String userId, String farmLabel) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id" + userId));
