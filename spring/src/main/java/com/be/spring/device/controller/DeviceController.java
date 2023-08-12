@@ -19,4 +19,5 @@ public class DeviceController {
     public Device addDevice(@RequestBody String farmLabel, @PathVariable String userId) {
         return deviceService.addDeviceToUser(farmLabel, userId);
     }
+
 }

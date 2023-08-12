@@ -23,27 +23,34 @@ public class MemberController {
 
     private final UserService userService;
     private final MailService mailService;
-    private final RefreshTokenService refreshTokenService;
 
     // 회원 가입 기능
     @PostMapping("/signup")
-    public RedirectView signup(@RequestBody AddUserRequest request) {
-        userService.save(request);
-        return new RedirectView("login");
-    }
-
-    // 회원 가입 시 중복 검사
-    @GetMapping("/signup/{userId}/exists")
-    public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userId) {
-        return ResponseEntity.ok(userService.checkIdDuplicate(userId));
+    public ResponseEntity<String> signup(@RequestBody AddUserRequest request) {
+        // 아이디 중복 검사 후 진행
+        String checkId = request.getUserId();
+        boolean isDuplicate = userService.checkIdDuplicate(checkId);
+        if (isDuplicate) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 아이디입니다.");
+        } else {
+            // 회원 정보 DB에 저장
+            userService.save(request);
+             return ResponseEntity.ok("회원가입이 완료되었습니다.");
+        }
     }
 
     // 로그인 기능
     @PostMapping("/login")
-    public JwtToken login(@RequestBody AddUserRequest request) {
+    public ResponseEntity<?> login(@RequestBody AddUserRequest request) {
         String userId = request.getUserId();
         String password = request.getPassword();
-        return userService.login(userId, password);
+        JwtToken token = userService.login(userId, password);
+
+        if (token != null) {
+            return ResponseEntity.ok(token);  // Returns a 200 OK response with the token
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");  // Returns a 401 Unauthorized response
+        }
     }
 
     // 아이디 찾기 기능

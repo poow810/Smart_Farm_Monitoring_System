@@ -59,7 +59,11 @@ public class UserService {
         // 아이디 기반 사용자 ID 검색
         Long userIdInDB = getIdByUserId(userId);
 
-        refreshTokenService.saveRefreshToken(userIdInDB, token.getRefreshToken());
+        // RefreshToken 객체 생성
+        RefreshToken refreshToken = new RefreshToken(userIdInDB, token.getRefreshToken());
+
+        // 데이터 베이스에 refreshToken 저장
+        refreshTokenRepository.save(refreshToken);
 
         return token;
     }
