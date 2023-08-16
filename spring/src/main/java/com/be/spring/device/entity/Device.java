@@ -21,8 +21,10 @@ public class Device {
     @Column(name = "farmLabel")
     private String farmLabel;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    @Column(name = "userId", nullable = false)
+    private String userId;
+
+    @Column(name = "serialNumber", nullable = false)
+    private String serialNumber;
     // 추가 필드 - 디바이스 타입, 모델 번호
 }

@@ -23,7 +23,7 @@ public class DeviceService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id" + userId));
 
         Device device = Device.builder()
-                .user(user)
+                .userId(userId)
                 .farmLabel(farmLabel)
                 .build();
 

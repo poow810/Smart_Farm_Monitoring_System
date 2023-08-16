@@ -1,26 +1,44 @@
-//package com.be.spring.device.controller;
-//
-//
-//import com.be.spring.device.dto.RealTimeDataDto;
-//import com.be.spring.device.service.DataService;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//
-//@RestController
-//@RequestMapping("/device")
-//@RequiredArgsConstructor
-//public class DataController {
-//
-//    private final DataService dataService;
-//
-//
-//    @GetMapping("/currentTemperature")
-//    public ResponseEntity<RealTimeDataDto> getCurrentTemperatureForAllDevices() {
-//        RealTimeDataDto realTimeDataDto = dataService.getCurrentTemperature();
-//        return ResponseEntity.ok(realTimeDataDto);
-//    }
-//}
+package com.be.spring.device.controller;
+
+
+import com.be.spring.device.dto.DataDto;
+import com.be.spring.device.service.DataService;
+import com.be.spring.management.config.jwt.TokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
+
+
+@RestController
+@RequestMapping("/device")
+@RequiredArgsConstructor
+public class DataController {
+
+    private final DataService dataService;
+    private final TokenProvider tokenProvider;
+
+
+    @GetMapping("/{type}")
+    public ResponseEntity<List<DataDto>> getSpecificDataByType(
+            @RequestParam String farmLabel,
+            @PathVariable String type,
+            HttpServletRequest request) {
+
+        // JWT 토큰에서 userId 추출
+        String token = request.getHeader("Authorization").substring(7); // "Bearer " 제거
+        Authentication authentication = tokenProvider.getAuthentication(token);
+        String userId = authentication.getName();
+
+        try {
+            List<DataDto> dataList = dataService.getFilterData(userId, farmLabel, type);
+            return ResponseEntity.ok(dataList);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+    }
+}

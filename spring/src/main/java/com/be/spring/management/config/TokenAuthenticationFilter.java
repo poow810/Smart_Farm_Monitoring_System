@@ -1,11 +1,13 @@
 package com.be.spring.management.config;
 
 import com.be.spring.management.config.jwt.TokenProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,12 +32,20 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 
         // validation 토큰으로 유효성 검증
 
-        if (token != null && tokenProvider.validToken(token)) {
-            Authentication authentication = tokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        try {
+            // validation 토큰으로 유효성 검증
+            if (token != null && tokenProvider.validToken(token)) {
+                Authentication authentication = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.getWriter().write("액세스 토큰이 만료되었습니다. 새로운 액세스 토큰 발급 요청을 하세요.");
+            return;
+        }
     }
 
     // Request header 에서 토큰 정보 추출

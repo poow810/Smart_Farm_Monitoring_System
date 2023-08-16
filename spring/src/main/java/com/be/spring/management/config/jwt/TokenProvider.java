@@ -102,6 +102,15 @@ public class TokenProvider {
         return false;
     }
 
+    // 리프레시 토큰의 유효성 검증
+    public boolean validateRefreshToken(String refreshToken) {
+        return validToken(refreshToken);
+    }
+
+    public Authentication getAuthenticationRefreshToken(String refreshToken) {
+        return getAuthentication(refreshToken);
+    }
+
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();

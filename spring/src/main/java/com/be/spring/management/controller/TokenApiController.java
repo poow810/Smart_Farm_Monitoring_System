@@ -1,6 +1,7 @@
 package com.be.spring.management.controller;
 
 
+import com.be.spring.management.config.jwt.TokenProvider;
 import com.be.spring.management.dto.AddUserRequest;
 import com.be.spring.management.dto.CreateAccessTokenRequest;
 import com.be.spring.management.dto.CreateAccessTokenResponse;
@@ -12,8 +13,10 @@ import com.be.spring.management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -22,21 +25,20 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/token")
 public class TokenApiController {
 
-    private final UserService userService;
+    private final TokenProvider tokenProvider;
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody Map<String, String> payload) {
+        String refreshToken = payload.get("refreshToken");
+        if (refreshToken == null || !tokenProvider.validateRefreshToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token.");
+        }
 
-//    @PostMapping("/api/token")
-//    public ResponseEntity<CreateAccessTokenResponse> createNewAccessToken(@RequestBody CreateAccessTokenRequest request) {
-//        String newAccessToken = tokenService.createNewAccessToken(request.getRefreshToken());
-//
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(new CreateAccessTokenResponse(newAccessToken));
-//    }
+        Authentication authentication = tokenProvider.getAuthenticationRefreshToken(refreshToken);
+        JwtToken newTokens = tokenProvider.generateToken(authentication);
 
-//    @PostMapping("/login")
-//    public ResponseEntity<JwtToken> authenticateUser(@RequestBody Map<String, String>) {
-//        JwtToken token = userService.login(loginForm.get("username"), loginForm.get("password"));
-//        return ResponseEntity.ok(token);
-//    }
+        return ResponseEntity.ok(newTokens);
+    }
 }

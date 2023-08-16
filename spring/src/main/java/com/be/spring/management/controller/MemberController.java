@@ -46,12 +46,18 @@ public class MemberController {
         String password = request.getPassword();
         JwtToken token = userService.login(userId, password);
 
-        if (token != null) {
-            return ResponseEntity.ok(token);  // Returns a 200 OK response with the token
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");  // Returns a 401 Unauthorized response
-        }
+        return ResponseEntity.ok(token);
+
+//        if (token != null) {
+//            return ResponseEntity.ok(token);  // Returns a 200 OK response with the token
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");  // Returns a 401 Unauthorized response
+//        }
     }
+
+    // 로그아웃 기능("/logout")
+
+
 
     // 아이디 찾기 기능
     @PostMapping("/findId")

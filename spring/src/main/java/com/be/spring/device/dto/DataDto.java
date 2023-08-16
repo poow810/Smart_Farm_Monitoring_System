@@ -11,6 +11,7 @@ public class DataDto {
 
     // 전달 받는 데이터
     private Long deviceId;
+    private String serialNumber;
     private double humidity;
     private double illuminance;
     private double temperature;
