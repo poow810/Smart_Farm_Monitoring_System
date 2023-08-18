@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public void saveRefreshToken(Long userId, String newRefreshToken) {
+    public void saveRefreshToken(String userId, String newRefreshToken) {
         // 해당 사용자의 기존 리프레시 토큰을 찾아서 삭제
         refreshTokenRepository.findByUserId(userId).ifPresent(refreshTokenRepository::delete);
 

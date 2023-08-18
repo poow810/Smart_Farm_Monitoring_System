@@ -55,7 +55,7 @@ public class UserService {
         JwtToken token = tokenProvider.generateToken(authentication);
 
         // 아이디 기반 사용자 ID 검색
-        Long userIdInDB = getIdByUserId(userId);
+        String userIdInDB = getIdByUserId(userId);
 
         // RefreshToken 객체 생성
         RefreshToken refreshToken = new RefreshToken(userIdInDB, token.getRefreshToken());
@@ -112,9 +112,9 @@ public class UserService {
     }
 
 
-    // 유저의 아이디를 통해 사용자의 id(primary key)추적
-    public Long getIdByUserId(String userId) {
+    // 유저의 아이디를 통해 사용자의 id 추적
+    public String getIdByUserId(String userId) {
         Optional<User> user = userRepository.findByUserId(userId);
-        return user.map(User::getId).orElse(null);
+        return user.map(User::getUserId).orElse(null);
     }
 }
