@@ -1,15 +1,18 @@
 package com.be.spring.management.controller;
 
 
+import com.be.spring.management.config.jwt.TokenProvider;
 import com.be.spring.management.dto.AddUserRequest;
 import com.be.spring.management.dto.JwtToken;
 import com.be.spring.management.dto.MailRequest;
 import com.be.spring.management.service.MailService;
 import com.be.spring.management.service.RefreshTokenService;
 import com.be.spring.management.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -23,6 +26,7 @@ public class MemberController {
 
     private final UserService userService;
     private final MailService mailService;
+    private final TokenProvider tokenProvider;
 
     // 회원 가입 기능
     @PostMapping("/signup")
@@ -55,7 +59,20 @@ public class MemberController {
 //        }
     }
 
-    // 로그아웃 기능("/logout")
+    // 로그아웃 기능
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7); // "Bearer " 제거
+        Authentication authentication = tokenProvider.getAuthentication(token);
+        String userId = authentication.getName();
+        try{
+            userService.logout(userId);
+            return ResponseEntity.ok().body("로그아웃 되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
+        }
+
+    }
 
 
 
