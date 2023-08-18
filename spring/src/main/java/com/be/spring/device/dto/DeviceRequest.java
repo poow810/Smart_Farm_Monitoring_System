@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class DeviceRequest {
     private String farmLabel;
-
+    private String macAddress;
 }

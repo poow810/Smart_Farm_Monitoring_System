@@ -9,4 +9,7 @@ import java.util.List;
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
     List<Device> findAllByUserIdAndFarmLabel(String userId, String farmLabel);
+
+    Device findByMacAddress(String macAddress);
+
 }

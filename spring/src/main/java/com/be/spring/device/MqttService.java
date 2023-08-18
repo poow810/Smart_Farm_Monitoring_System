@@ -1,66 +1,62 @@
 package com.be.spring.device;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import com.be.spring.device.dto.DataDto;
+import com.be.spring.device.entity.Device;
+import com.be.spring.device.entity.DeviceData;
+import com.be.spring.device.repository.DataRepository;
+import com.be.spring.device.repository.DeviceRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Service
+@RequiredArgsConstructor
 public class MqttService {
 
-    @Value("${mqtt.url}")
-    private String mqttServer;
+    private final DataRepository dataRepository;
+    private final DeviceRepository deviceRepository;
 
-    private final MqttProperties mqttProperties;
+    @ServiceActivator(inputChannel = "mqttInputChannel")
+    public void handleMessage(Message<?> message) {
+        System.out.println("Received MQTT message: " + message.getPayload());
+        // MQTT -> DTO
+        DataDto dataDto = convertToDto((String) message.getPayload());
+        // DTO -> ENTITY
+        DeviceData deviceData = convertToEntity(dataDto);
+        dataRepository.save(deviceData);
+    }
 
-    private MqttClient mqttClient;
-
-    @Autowired
-    public MqttService(MqttProperties mqttProperties) {
-        this.mqttProperties = mqttProperties;
+    private DataDto convertToDto(String payload) {
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            mqttClient = new MqttClient(mqttServer, MqttClient.generateClientId(), new MemoryPersistence());
-        } catch (MqttException e) {
-            e.printStackTrace();
+            return mapper.readValue(payload, DataDto.class);
+        }catch (IOException e) {
+            throw new RuntimeException("변환에 실패했습니다.", e);
         }
     }
 
-    public void connect() {
-        try {
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setCleanSession(true);
-            options.setUserName(mqttProperties.getUsername());
-            options.setPassword(mqttProperties.getPassword().toCharArray());
-
-            mqttClient.connect(options);
-        } catch (MqttException e) {
-            e.printStackTrace();
+    private DeviceData convertToEntity(DataDto dto) {
+        Device device = deviceRepository.findByMacAddress(dto.getMacAddress());
+        if(device == null) {
+            throw new RuntimeException("Mac 주소가 일치하지 않습니다.");
         }
-    }
 
-    public void publish(String message) {
-        try {
-            mqttClient.publish(mqttProperties.getTopic(), new MqttMessage(message.getBytes()));
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime recordedAt = LocalDateTime.parse(dto.getCurrentTime(), formatter);
 
-    public void handleReceivedMessage(String topic, String payload) {
-        // 여기에 메시지를 수신했을 때의 로직을 추가합니다.
-        System.out.println("Topic: " + topic);
-        System.out.println("Payload: " + payload);
-    }
+        return DeviceData.builder()
+                .device(device)
+                .macAddress(dto.getMacAddress())
+                .temperatureCelsius(dto.getTemperatureCelsius())
+                .humidity(dto.getHumidity())
+                .illuminance(dto.getIlluminance())
+                .recordedAt(recordedAt).build();
 
-    public void disconnect() {
-        try {
-            mqttClient.disconnect();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
     }
 }

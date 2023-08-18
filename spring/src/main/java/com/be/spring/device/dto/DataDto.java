@@ -11,9 +11,9 @@ public class DataDto {
 
     // 전달 받는 데이터
     private Long deviceId;
-    private String serialNumber;
+    private String macAddress;
     private double humidity;
     private double illuminance;
-    private double temperature;
-    private LocalDateTime recordedAt;
+    private double temperatureCelsius;
+    private String currentTime;
 }

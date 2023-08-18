@@ -22,6 +22,7 @@ bin/
 
 ### IntelliJ IDEA ###
 application-oauth.properties
+application-stage.properties
 .idea
 *.iws
 *.iml

@@ -24,11 +24,11 @@ public class DeviceData {
     @JoinColumn(name = "deviceId", nullable = false)
     private Device device;
 
-    @Column(name = "serialNumber")
-    private String serialNumber;
+    @Column(name = "macAddress", nullable = false, unique = true)
+    private String macAddress;
 
-    @Column(name = "temperature", nullable = false)
-    private Double temperature;
+    @Column(name = "temperatureCelsius", nullable = false)
+    private Double temperatureCelsius;
 
     @Column(name = "humidity", nullable = false)
     private Double humidity;

@@ -24,7 +24,7 @@ public class DataController {
 
 
     @GetMapping("/{type}")
-    public ResponseEntity<List<DataDto>> getSpecificDataByType(
+    public ResponseEntity<List<Double>> getSpecificDataByType(
             @RequestParam String farmLabel,
             @PathVariable String type,
             HttpServletRequest request) {
@@ -34,11 +34,7 @@ public class DataController {
         Authentication authentication = tokenProvider.getAuthentication(token);
         String userId = authentication.getName();
 
-        try {
-            List<DataDto> dataList = dataService.getFilterData(userId, farmLabel, type);
-            return ResponseEntity.ok(dataList);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Collections.emptyList());
-        }
+        List<Double> dataList = dataService.getData(userId, farmLabel, type);
+        return ResponseEntity.ok(dataList);
     }
 }

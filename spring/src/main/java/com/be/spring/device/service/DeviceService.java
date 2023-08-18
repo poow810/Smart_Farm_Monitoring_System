@@ -18,13 +18,14 @@ public class DeviceService {
 
 
     // 디바이스 추가
-    public Device addDeviceToUser(String userId, String farmLabel) {
+    public Device addDeviceToUser(String userId, String farmLabel, String macAddress) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id" + userId));
 
         Device device = Device.builder()
                 .userId(userId)
                 .farmLabel(farmLabel)
+                .macAddress(macAddress)
                 .build();
 
         return deviceRepository.save(device);
