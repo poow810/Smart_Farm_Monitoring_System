@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -122,7 +123,10 @@ public class UserService {
 
     // 로그아웃
     public void logout(String userId) {
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(getIdByUserId(userId));
-        refreshToken.ifPresent(refreshTokenRepository::delete);
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findAllByUserId(userId);
+
+        if (!refreshTokens.isEmpty()) {
+            refreshTokenRepository.deleteAll(refreshTokens);
+        }
     }
 }

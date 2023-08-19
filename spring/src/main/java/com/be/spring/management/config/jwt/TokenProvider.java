@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class TokenProvider {
 
     private final Key key;
-    public TokenProvider(@Value("${jwt.secret-key}") String secretKey) {
+    public TokenProvider(@Value("${jwt.secret.key}") String secretKey) {
         try {
             byte[] keyBytes = Decoders.BASE64.decode(secretKey);
             this.key = Keys.hmacShaKeyFor(keyBytes);

@@ -39,6 +39,8 @@ public class User implements UserDetails {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
@@ -48,28 +50,6 @@ public class User implements UserDetails {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
-
-//    // OAuth 서비스
-//    // 사용자 이름
-//    @Column(name = "nickname", unique = true)
-//    private String nickname;
-
-//    @Builder
-//    public User(String email, String password,  role) {
-//        this.email = email;
-//        this.password = password;
-//        this.roles = roles;
-//    }
-//
-//    public void addDevice(Device device) {
-//        devices.add(device);
-//        device.setUser(this);
-//    }
-//
-//    public User update(String nickname) {
-//        this.nickname = nickname;
-//        return this;
-//    }
 
     @Override // 사용자의 id를 반환(고유 값)
     public String getUsername() {
@@ -101,3 +81,27 @@ public class User implements UserDetails {
         return true; // true = 사용 가능
     }
 }
+
+
+
+//    // OAuth 서비스
+//    // 사용자 이름
+//    @Column(name = "nickname", unique = true)
+//    private String nickname;
+
+//    @Builder
+//    public User(String email, String password,  role) {
+//        this.email = email;
+//        this.password = password;
+//        this.roles = roles;
+//    }
+//
+//    public void addDevice(Device device) {
+//        devices.add(device);
+//        device.setUser(this);
+//    }
+//
+//    public User update(String nickname) {
+//        this.nickname = nickname;
+//        return this;
+//    }

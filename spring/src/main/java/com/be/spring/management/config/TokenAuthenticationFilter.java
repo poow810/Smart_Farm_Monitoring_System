@@ -44,7 +44,6 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             httpServletResponse.getWriter().write("액세스 토큰이 만료되었습니다. 새로운 액세스 토큰 발급 요청을 하세요.");
-            return;
         }
     }
 
