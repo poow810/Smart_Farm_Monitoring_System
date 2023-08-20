@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -20,11 +21,7 @@ public class DeviceData {
     @Column(name = "dataId", updatable = false)
     private Long dataId;
 
-    @ManyToOne
-    @JoinColumn(name = "deviceId", nullable = false)
-    private Device device;
-
-    @Column(name = "macAddress", nullable = false, unique = true)
+    @Column(name = "macAddress", nullable = false)
     private String macAddress;
 
     @Column(name = "temperatureCelsius", nullable = false)

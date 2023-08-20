@@ -24,7 +24,7 @@ public class Device {
     @Column(name = "userId", nullable = false)
     private String userId;
 
-    @Column(name = "macAddress", nullable = false)
+    @Column(name = "macAddress", nullable = false, unique = true)
     private String macAddress;
     // 추가 필드 - 디바이스 타입, 모델 번호
 }

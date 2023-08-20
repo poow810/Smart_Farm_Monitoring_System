@@ -7,7 +7,6 @@ import com.be.spring.management.dto.CreateAccessTokenRequest;
 import com.be.spring.management.dto.CreateAccessTokenResponse;
 import com.be.spring.management.dto.JwtToken;
 import com.be.spring.management.entity.User;
-import com.be.spring.management.service.TokenService;
 import com.be.spring.management.service.UserDetailService;
 import com.be.spring.management.service.UserService;
 import lombok.RequiredArgsConstructor;

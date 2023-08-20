@@ -11,6 +11,11 @@ java {
     sourceCompatibility = '17'
 }
 
+ext {
+    set('springCloudGcpVersion', "4.7.2")
+    set('springCloudVersion', "2022.0.4")
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -30,6 +35,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
     implementation 'org.json:json:20230227'
     implementation 'org.springframework.boot:spring-boot-starter-integration'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
@@ -62,4 +70,12 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }

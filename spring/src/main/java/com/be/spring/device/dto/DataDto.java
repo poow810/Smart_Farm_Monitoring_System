@@ -9,11 +9,16 @@ import java.time.LocalDateTime;
 @Setter
 public class DataDto {
 
-    // 전달 받는 데이터
+    // device 데이터를 전달
     private Long deviceId;
     private String macAddress;
     private double humidity;
     private double illuminance;
     private double temperatureCelsius;
     private String currentTime;
+
+
+    // image 전달
+    private String image;
+    private String time;
 }

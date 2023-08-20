@@ -50,6 +50,18 @@ public class DataService {
             default -> throw new IllegalArgumentException("Invalid type: " + type);
         };
     }
+
+    // 가장 최신 데이터 불러오기
+    public List<DeviceData> getLastestData(String userId) {
+        List<Device> devices = deviceRepository.findAllByUserId(userId);
+
+        List<DeviceData> latestDataList = new ArrayList<>();
+        for (Device device : devices) {
+            DeviceData latestData = dataRepository.findLatestDataForMacAddress(device.getMacAddress());
+            latestDataList.add(latestData);
+        }
+        return latestDataList;
+    }
 }
 
 

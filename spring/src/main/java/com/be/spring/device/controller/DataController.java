@@ -2,7 +2,9 @@ package com.be.spring.device.controller;
 
 
 import com.be.spring.device.dto.DataDto;
+import com.be.spring.device.entity.DeviceData;
 import com.be.spring.device.service.DataService;
+import com.be.spring.device.service.DeviceService;
 import com.be.spring.management.config.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class DataController {
 
     private final DataService dataService;
     private final TokenProvider tokenProvider;
-
+    private final DeviceService deviceService;
 
     @GetMapping("/{type}")
     public ResponseEntity<List<Double>> getSpecificDataByType(
@@ -37,4 +39,14 @@ public class DataController {
         List<Double> dataList = dataService.getData(userId, farmLabel, type);
         return ResponseEntity.ok(dataList);
     }
+
+    @GetMapping("/lastest")
+    public ResponseEntity<List<DeviceData>> getLatestDataForAllDevices(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7); // "Bearer " 제거
+        Authentication authentication = tokenProvider.getAuthentication(token);
+        String userId = authentication.getName();
+        List<DeviceData> latestDataList = dataService.getLastestData(userId);
+        return ResponseEntity.ok(latestDataList);
+    }
+
 }

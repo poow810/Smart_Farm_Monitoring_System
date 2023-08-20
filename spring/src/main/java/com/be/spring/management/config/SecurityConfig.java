@@ -46,7 +46,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // 기존 CorsFilter에서 설정한 CORS 규칙
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5174"));  // 허용할 origin
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));  // 허용할 origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // 허용할 HTTP 메소드
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
