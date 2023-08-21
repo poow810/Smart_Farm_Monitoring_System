@@ -1,4 +1,4 @@
-name: Smart_Farm_Monitoring_System CD
+name: Smartfarm CD
 
 on:
   push:
