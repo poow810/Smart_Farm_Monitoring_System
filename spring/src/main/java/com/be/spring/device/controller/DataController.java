@@ -1,19 +1,14 @@
 package com.be.spring.device.controller;
 
 
-import com.be.spring.device.dto.DataDto;
 import com.be.spring.device.entity.DeviceData;
 import com.be.spring.device.service.DataService;
-import com.be.spring.device.service.DeviceService;
 import com.be.spring.management.config.jwt.JwtUtilityService;
-import com.be.spring.management.config.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 
@@ -23,8 +18,6 @@ import java.util.List;
 public class DataController {
 
     private final DataService dataService;
-    private final TokenProvider tokenProvider;
-    private final DeviceService deviceService;
     private final JwtUtilityService jwtUtilityService;
 
     @GetMapping("/{type}")

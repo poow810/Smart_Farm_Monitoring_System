@@ -20,7 +20,6 @@ import java.util.List;
 public class DeviceController {
 
     private final DeviceService deviceService;
-    private final TokenProvider tokenProvider;
     private final JwtUtilityService jwtUtilityService;
 
     @GetMapping("/data")
