@@ -5,6 +5,7 @@ import com.be.spring.device.dto.DataDto;
 import com.be.spring.device.entity.DeviceData;
 import com.be.spring.device.service.DataService;
 import com.be.spring.device.service.DeviceService;
+import com.be.spring.management.config.jwt.JwtUtilityService;
 import com.be.spring.management.config.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class DataController {
     private final DataService dataService;
     private final TokenProvider tokenProvider;
     private final DeviceService deviceService;
+    private final JwtUtilityService jwtUtilityService;
 
     @GetMapping("/{type}")
     public ResponseEntity<List<Double>> getSpecificDataByType(
@@ -32,9 +34,7 @@ public class DataController {
             HttpServletRequest request) {
 
         // JWT 토큰에서 userId 추출
-        String token = request.getHeader("Authorization").substring(7); // "Bearer " 제거
-        Authentication authentication = tokenProvider.getAuthentication(token);
-        String userId = authentication.getName();
+        String userId = jwtUtilityService.getUserIdFromToken(request);
 
         List<Double> dataList = dataService.getData(userId, farmLabel, type);
         return ResponseEntity.ok(dataList);
@@ -42,9 +42,7 @@ public class DataController {
 
     @GetMapping("/lastest")
     public ResponseEntity<List<DeviceData>> getLatestDataForAllDevices(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").substring(7); // "Bearer " 제거
-        Authentication authentication = tokenProvider.getAuthentication(token);
-        String userId = authentication.getName();
+        String userId = jwtUtilityService.getUserIdFromToken(request);
         List<DeviceData> latestDataList = dataService.getLastestData(userId);
         return ResponseEntity.ok(latestDataList);
     }

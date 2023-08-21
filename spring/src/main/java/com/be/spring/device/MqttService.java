@@ -86,6 +86,7 @@ public class MqttService {
         // 이미지 URL을 사용해서 DeviceImage 엔터티 객체를 생성하고 반환하는 로직
         // 예를 들면:
         DeviceImage deviceImage = new DeviceImage();
+        deviceImage.setMacAddress(imageDto.getMacAddress());
         deviceImage.setImageURL(imageURL);
         deviceImage.setTimestamp(imageDto.getTime());
         return deviceImage;

@@ -1,6 +1,7 @@
 package com.be.spring.management.controller;
 
 
+import com.be.spring.management.config.jwt.JwtUtilityService;
 import com.be.spring.management.config.jwt.TokenProvider;
 import com.be.spring.management.dto.AddUserRequest;
 import com.be.spring.management.dto.JwtToken;
@@ -27,6 +28,7 @@ public class MemberController {
     private final UserService userService;
     private final MailService mailService;
     private final TokenProvider tokenProvider;
+    private final JwtUtilityService jwtUtilityService;
 
     // 회원 가입 기능
     @PostMapping("/signup")
@@ -51,20 +53,12 @@ public class MemberController {
         JwtToken token = userService.login(userId, password);
 
         return ResponseEntity.ok(token);
-
-//        if (token != null) {
-//            return ResponseEntity.ok(token);  // Returns a 200 OK response with the token
-//        } else {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");  // Returns a 401 Unauthorized response
-//        }
     }
 
     // 로그아웃 기능
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").substring(7); // "Bearer " 제거
-        Authentication authentication = tokenProvider.getAuthentication(token);
-        String userId = authentication.getName();
+        String userId = jwtUtilityService.getUserIdFromToken(request);
         try{
             userService.logout(userId);
             return ResponseEntity.ok().body("로그아웃 되었습니다.");
@@ -72,8 +66,6 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
         }
     }
-
-
 
     // 아이디 찾기 기능
     @PostMapping("/findId")
@@ -97,6 +89,7 @@ public class MemberController {
         return json;
     }
 
+    // 비밀번호 찾기
     @PostMapping("/findPw")
     public ResponseEntity<String> findPassword(@RequestBody MailRequest request) {
         // userEmailCheck 함수에서 해당 이메일과 아이디의 사용자가 있는지 확인합니다.
