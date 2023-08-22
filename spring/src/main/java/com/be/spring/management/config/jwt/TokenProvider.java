@@ -31,8 +31,9 @@ import java.util.stream.Collectors;
 public class TokenProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private static final long ACCESS_TIME = 60*1000L;
-    private static final long REFRESH_TIME = 2*60*1000L;
+    private final RefreshTokenService refreshTokenService;
+    private static final long ACCESS_TIME = 60 * 60 * 1000L;
+    private static final long REFRESH_TIME =  6 * 60 * 60 * 1000L;
     public static final String ACCESS_TOKEN = "Access_Token";
     public static final String REFRESH_TOKEN = "Refresh_Token";
 
@@ -114,6 +115,20 @@ public class TokenProvider {
 
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(getUserIdFromToken(token));
         return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken());
+    }
+
+    // 액세스 토큰 만료 시 새로운 액세스 토큰 발급
+    public JwtToken refreshAccessToken(String expiredAccessToken) {
+        String userId = getUserIdFromToken(expiredAccessToken);
+
+        RefreshToken refreshToken = refreshTokenService.findByRefreshToken(expiredAccessToken);
+        if (refreshToken == null) {
+            throw new RuntimeException("유효한 리프레시 토큰이 존재하지 않습니다.");
+        }
+        Authentication authentication = getAuthenticationRefreshToken(refreshToken.getRefreshToken());
+        JwtToken jwtToken = generateToken(authentication);
+        refreshTokenService.saveRefreshToken(userId, jwtToken.getRefreshToken());
+        return jwtToken;
     }
 
     // 토큰에서 userId 가져오는 기능

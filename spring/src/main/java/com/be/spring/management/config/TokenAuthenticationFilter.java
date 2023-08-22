@@ -1,6 +1,7 @@
 package com.be.spring.management.config;
 
 import com.be.spring.management.config.jwt.TokenProvider;
+import com.be.spring.management.dto.JwtToken;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,7 +26,7 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
     public void doFilter(
             ServletRequest request,
             ServletResponse response,
-            FilterChain filterChain)  throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
 
         // 헤더에서 JWT 토큰 추출
         String token = resolveToken((HttpServletRequest) request);
@@ -43,17 +44,18 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
         } catch (ExpiredJwtException e) {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpServletResponse.getWriter().write("액세스 토큰이 만료되었습니다. 새로운 액세스 토큰 발급 요청을 하세요.");
+            httpServletResponse.getWriter().write("유효하지 않은 액세스 토큰입니다.");
         }
     }
+
 
     // Request header 에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {
         System.out.println("Authorization Header: " + request.getHeader("Authorization"));
         String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")){
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             return bearerToken.substring(7);
-    }
+        }
         return null;
     }
 }

@@ -1,4 +1,4 @@
-package com.be.spring.device;
+package com.be.spring.mqtt;
 
 import com.be.spring.device.dto.DataDto;
 import com.be.spring.device.entity.DeviceData;
