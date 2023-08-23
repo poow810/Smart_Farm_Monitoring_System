@@ -17,7 +17,7 @@ import org.springframework.messaging.MessageChannel;
 public class MqttConfig {
 
     @Value("${mqtt.url}")
-    private String mqttServer;
+    private String[] mqttServers;
 
     @Value("${mqtt.port}")
     private int mqttPort;
@@ -34,7 +34,7 @@ public class MqttConfig {
     @Bean
     public MqttConnectOptions mqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[] { "ssl://" + mqttServer + ":" + mqttPort});
+        options.setServerURIs(mqttServers); // 모든 서버 URL을 설정
         options.setUserName(mqttUsername);
         options.setPassword(mqttPassword.toCharArray());
         return options;
@@ -54,7 +54,6 @@ public class MqttConfig {
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
-                "ssl://" +mqttServer + ":" + mqttPort,
                 MqttClient.generateClientId(), mqttClientFactory(), mqttTopic
         );
         adapter.setCompletionTimeout(5000);
