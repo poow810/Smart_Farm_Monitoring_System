@@ -1,80 +1,60 @@
 # Class Diagram
 
 ```mermaid
-classDiagram
+classDiagram 
+    producer --o ProducerWeb
+    producer *--userPlants
+    producer *--sensor
+    ProducerWeb <-- server
+    MQTTbrocker <-- sensor
+    server<-- MQTTbrocker
+    AIserver <--> server
 
+    sensor <-- userPlants
+    class userPlants { }
+    class sensor {
+        int deviceId
+        int humidity
+        int temperature
+        int iluminesense
+        photoOfPlants
 
+        sendDataToBrocker()
+    }
 
-namespace Client_Side {          
-    class Client {
-	    ip
+    class MQTTbrocker {
+        getDataFromArduino()
+    }
+    class server {
+        makeAlert()
+        getDataFromBrocker()
+        getDataFromAiServer()
+    }
+    class AIserver {
+        weedLocation
+        illnessOfPlants
+
+        calculateInfo(data)
+    }
+    class ProducerWeb{
+        selectedFarm
+        selectedProperty
+        userAlert
+        getFarmList()
+        getPropertyList()
+        getData()
+        signIn()
+        signUp()
+        findPassword()
+        getAlert()
+        sendAlert()
+    }
+    class producer {
         id
         password
-        requestServer()
-    }
-}
-
-namespace Server_side {
-    class MainServer {
-        
-        connectDatabase()
-        requestData()
-    }
-    class AuthServer {
-
-        authenticateUser()
-        getUserPermissions()
-        connectDatabase()
-    }
-    class AILearningServer {
-        trainModel() 
-        updateModel()
-        connectDatabase()
-    }
-}
-
-namespace Database {
-    class MainDatabase {
-        temperature
-        time
-        humidity
-        illuminance
-        plantImage
-        plantVideo
-        storeData()
-        retrieveData()
-    }
-    class userDatabase{
-        userId
-        userPassword
-        userRank
+        email
+        userPlants[*]
+        sensor[*]
     }
 
-}
-
-namespace sensor {
-    class ArduinoServer {
-        getTemperature()
-        getHumidity()
-        getLightLevel()
-    }
-    class RaspberryPiServer {
-        captureImage()
-        recordVideo()
-    }
-}
-
-    Client -- MainServer : requests >
-
-    MainServer -- MainDatabase : connects >
-
-
-    AuthServer -- userDatabase : checks user level >
-    AuthServer -- MainServer : checks user permissions >
-
-
-    AILearningServer -- MainDatabase : communicates >
-
-    ArduinoServer -- MainServer : sends data >
-    RaspberryPiServer -- MainServer : sends data > 
 ```
